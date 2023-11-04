@@ -13,5 +13,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(sqlite3)
 
 ...
-target_link_library(xxxx PRIVATE sqlite3)
+target_link_libraries(xxxx PRIVATE sqlite3)
 ```
