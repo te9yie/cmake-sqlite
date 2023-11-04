@@ -5,7 +5,7 @@ option(SQLITE3_WITH_EXAMPLES "Builds examples for cmake_sqlite3" OFF)
 
 include(FetchContent)
 
-# sqlite3
+# sqlite
 FetchContent_Declare(
     sqlite
     URL https://www.sqlite.org/2023/sqlite-amalgamation-3440000.zip
