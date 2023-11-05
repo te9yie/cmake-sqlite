@@ -21,36 +21,39 @@ int exec_sql(sqlite3* db,
 }
 
 int main() {
+  if (auto r = sqlite3_initialize(); r != SQLITE_OK) {
+    std::cerr << sqlite3_errstr(r) << std::endl;
+    return EXIT_FAILURE;
+  }
+
   sqlite3* db = nullptr;
   if (auto r = sqlite3_open_v2(
           "test.db", &db, SQLITE_OPEN_MEMORY | SQLITE_OPEN_READWRITE, nullptr);
       r != SQLITE_OK) {
     std::cerr << sqlite3_errmsg(db) << std::endl;
-    sqlite3_close(db);
-    return EXIT_FAILURE;
+    goto shutdown;
   }
 
   if (exec_sql(db, "create table users (id INTEGER, name TEXT);") !=
       SQLITE_OK) {
-    sqlite3_close(db);
-    return EXIT_FAILURE;
+    goto shutdown;
   }
 
   if (exec_sql(db, "insert into users values (1, 'Alice');") != SQLITE_OK) {
-    sqlite3_close(db);
-    return EXIT_FAILURE;
+    goto shutdown;
   }
 
   if (exec_sql(db, "insert into users values (2, 'Bob');") != SQLITE_OK) {
-    sqlite3_close(db);
-    return EXIT_FAILURE;
+    goto shutdown;
   }
 
   if (exec_sql(db, "select * from users;", callback) != SQLITE_OK) {
-    sqlite3_close(db);
-    return EXIT_FAILURE;
+    goto shutdown;
   }
 
+shutdown:
   sqlite3_close(db);
+  sqlite3_shutdown();
+
   return EXIT_SUCCESS;
 }
